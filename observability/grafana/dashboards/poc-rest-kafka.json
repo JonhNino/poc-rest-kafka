@@ -1,0 +1,109 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "Ordenes Procesadas (total)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "orders_processed_total", "legendFormat": "procesadas", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "green", "value": null }] } } }
+    },
+    {
+      "title": "Ordenes Fallidas (total)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "targets": [
+        { "expr": "orders_failed_total", "legendFormat": "fallidas", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "red", "value": null }] } } }
+    },
+    {
+      "title": "Eventos Kafka Publicados (total)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "kafka_events_published_total", "legendFormat": "publicados", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "blue", "value": null }] } } }
+    },
+    {
+      "title": "Eventos Kafka Fallidos (total)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "targets": [
+        { "expr": "kafka_events_failed_total", "legendFormat": "fallidos", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "orange", "value": null }] } } }
+    },
+    {
+      "title": "Ordenes por segundo (rate 1m)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "targets": [
+        { "expr": "rate(orders_processed_total[1m])", "legendFormat": "procesadas/s", "refId": "A" },
+        { "expr": "rate(orders_failed_total[1m])", "legendFormat": "fallidas/s", "refId": "B" }
+      ]
+    },
+    {
+      "title": "Kafka publish rate (1m)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "targets": [
+        { "expr": "rate(kafka_events_published_total[1m])", "legendFormat": "publicados/s", "refId": "A" },
+        { "expr": "rate(kafka_events_failed_total[1m])", "legendFormat": "fallidos/s", "refId": "B" }
+      ]
+    },
+    {
+      "title": "Latencia procesamiento ordenes (p50, p95, p99)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, rate(orders_processing_duration_seconds_bucket[1m]))", "legendFormat": "p50", "refId": "A" },
+        { "expr": "histogram_quantile(0.95, rate(orders_processing_duration_seconds_bucket[1m]))", "legendFormat": "p95", "refId": "B" },
+        { "expr": "histogram_quantile(0.99, rate(orders_processing_duration_seconds_bucket[1m]))", "legendFormat": "p99", "refId": "C" }
+      ]
+    },
+    {
+      "title": "Latencia publicacion Kafka (p50, p95, p99)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, rate(kafka_events_publish_duration_seconds_bucket[1m]))", "legendFormat": "p50", "refId": "A" },
+        { "expr": "histogram_quantile(0.95, rate(kafka_events_publish_duration_seconds_bucket[1m]))", "legendFormat": "p95", "refId": "B" },
+        { "expr": "histogram_quantile(0.99, rate(kafka_events_publish_duration_seconds_bucket[1m]))", "legendFormat": "p99", "refId": "C" }
+      ]
+    },
+    {
+      "title": "HTTP Server Requests (rate 1m)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 22 },
+      "targets": [
+        { "expr": "rate(http_server_requests_seconds_count{uri=\"/orders\"}[1m])", "legendFormat": "{{method}} {{status}}", "refId": "A" }
+      ]
+    },
+    {
+      "title": "JVM Memory Used",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 22 },
+      "targets": [
+        { "expr": "jvm_memory_used_bytes{area=\"heap\"}", "legendFormat": "heap {{id}}", "refId": "A" },
+        { "expr": "jvm_memory_used_bytes{area=\"nonheap\"}", "legendFormat": "nonheap {{id}}", "refId": "B" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["quarkus", "kafka", "orders"],
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "POC Rest Kafka - Orders",
+  "uid": "poc-rest-kafka-orders"
+}
+
